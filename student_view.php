@@ -1,0 +1,213 @@
+<?php session_start();
+    if (!isset($_SESSION["siteLog"])) {
+        header('location:sign_in_admin.php');
+    }
+?>
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--Google Fonts-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!--Boostrap Icons-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+
+    <!--CSS File-->
+    <link rel="stylesheet" href="styles/main.css">
+
+    <title>Student Details</title>
+</head>
+
+<body>
+
+    <!--Nav bar-->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand text-success" href="admin_portal_home.php"><i class="bi bi-hdd-fill"></i> Admin Portal</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="admin_portal_home.php"><i class="bi bi-house-fill"></i> Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-diagram-3-fill"></i> Choose Subject
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="list_oop.php"><i class="bi bi-bookmarks"></i> Object-Oriented Programing</a></li>
+                            <li><a class="dropdown-item" href="list_wad.php"><i class="bi bi-bookmarks"></i> Web Application Development</a></li>
+                            <li><a class="dropdown-item" href="list_idcp.php"><i class="bi bi-bookmarks"></i> Interactive Design Concepts & Practices</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="student_db.php"><i class="bi bi-wallet"></i> All Subjects</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="student_db.php"><i class="bi bi-people"></i> Student Profiles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="database/sign_out_admin.php"><button type="button" class="btn btn-outline-success btn-sm"><i class="bi bi-box-arrow-left"></i> Sign Out</button></a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+
+    <!--Content-->
+    <br>
+    <br>
+    <center>
+        <h1 class="log-head text-success">Student Details</h1>
+        <h9 class="sub-head text-primary">Bio</h9>
+        <br>
+        <a href="student_db.php"><button type="button" class="btn btn-outline-success btn-sm"><i class="bi bi-arrow-90deg-up"></i> Back</button></a>
+        <div class="container-fluid">
+            <hr>
+        </div>
+    </center>
+    <br>
+
+    <div class="container-fluid">
+
+        <!--Content-->
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <div class="card-body">
+
+                            <?php
+                                include 'database/db_connect.php';
+
+                                $sid = $_GET['id'];
+                                $sql = "select * from `students` where `index` like '" . $sid . "'";
+                                $result = $conn->query($sql);
+
+
+                                if ($result->num_rows > 0) {
+                                    while ($row = $result->fetch_assoc()) {
+
+                                        $oop = $row["oop"];
+                                        $wad = $row["wad"];
+                                        $idcp = $row["idcp"];
+
+                                        if ($oop == "Participated") {
+                                            $oopvar = "bg-danger";
+                                        } else if ($oop == "On-Going") {
+                                            $oopvar = "bg-success";
+                                        }
+
+                                        if ($wad == "Participated") {
+                                            $wadvar = "bg-danger";
+                                        } else if ($wad== "On-Going") {
+                                            $wadvar = "bg-success";
+                                        }
+
+                                        if ($idcp == "Participated") {
+                                            $idcpvar = "bg-danger";
+                                        } else if ($idcp== "On-Going") {
+                                            $idcpvar = "bg-success";
+                                        }
+
+                                        $del = "database/delete_student.php?rn=".$row["index"];
+
+                                        echo "<h5 class='card-header text-success'>". $row["name"]."</h5>";
+                                        echo "<div class='card-body'>". 
+                                            "<div class='row'>". 
+                                                "<div class='col-sm-4'>".
+                                                    "<h5 class='card-title'>Profile</h5>".
+                                                    "<img class='dp' src='img/profile.jpg' alt='Profile Picture' width='160' height='160'>".
+                                                "</div>".
+
+                                                "<div class='col-sm-4'>".
+                                                    "<h5 class='card-title'>Bio Data</h5>".
+                                                    "<p class='card-text'>Name: ". $row["name"].
+                                                    "<p class='card-text'>Index: ". $row["index"].
+                                                    "<p class='card-text'>Birthday: ". $row["birthday"].
+                                                    "<p class='card-text'>Address: ". $row["address"].
+                                                "</div>".
+
+                                                "<div class='col-sm-4'>".
+                                                    "<h5 class='card-title'>Examination Data</h5>".
+                                                    "<p class='card-text'>OOP: <span class='badge $oopvar text-uppercase'>". $row["oop"]. "</span> &nbsp &nbsp Mark: ". $row["oopmarks"].
+                                                    "<p class='card-text'>WAD: <span class='badge $wadvar text-uppercase'>". $row["wad"]. "</span> &nbsp &nbsp Mark: ". $row["wadmarks"].
+                                                    "<p class='card-text'>IDCP: <span class='badge $idcpvar text-uppercase'>". $row["idcp"]. "</span> &nbsp &nbsp Mark: ". $row["idcpmarks"].
+                                                    "<br>".
+                                                    "<br>".
+                                                    "<a href='$del' class='btn btn-outline-danger'><i class='bi bi-x-lg'></i> Remove</a>".
+                                                "</div>".
+                                            "</div>". 
+                                        "</div>";
+                                    }
+                                } else {
+                                    echo "No Directory!";
+                                }
+                                $conn->close();
+                            ?>
+
+                <!--<h5 class="card-header text-success">Vimantha Dilshan</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <h5 class="card-title">Profile</h5>
+                        <img class="dp" src="img/profile.jpg" alt="Profile Picture" width="160" height="160">
+                    </div>
+                    <div class="col-sm-4">
+                        <h5 class="card-title">Bio Data</h5>
+                        <p class="card-text">Name: Vimantha Dilshan</p>
+                        <p class="card-text">Index: IT200</p>
+                        <p class="card-text">Birthday: 23 MAR 1999</p>
+                        <p class="card-text">Address: Kuliypitiya</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <h5 class="card-title">Examination Data</h5>
+                        <p class="card-text">OOP: <span class="badge bg-danger 
+                           text-uppercase">Participated
+                            </span> &nbsp &nbsp Mark: 89</p>
+                        <p class="card-text">WAD: <span class="badge bg-success 
+                           text-uppercase">On-Going
+                            </span> &nbsp &nbsp Mark: -</p>
+                        <p class="card-text">IDCP: <span class="badge bg-danger 
+                           text-uppercase">Participated
+                            </span> &nbsp &nbsp Mark: 76</p>
+                        <a href="#" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Edit details</a>
+                    </div>
+                </div>
+            </div> -->
+
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>
